@@ -19,7 +19,7 @@ public class MessageGenerator {
 
     @Outgoing("out-messages")
     public Multi<String> generate() {
-        return Multi.createFrom().ticks().every(Duration.ofSeconds(5))
+        return Multi.createFrom().ticks().every(Duration.ofSeconds(1))
                 .onOverflow().drop()
                 .map(tick -> getClientMessage(getClient()));
     }

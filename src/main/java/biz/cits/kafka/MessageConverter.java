@@ -15,7 +15,7 @@ public class MessageConverter {
     @Broadcast
     @Acknowledgment(Acknowledgment.Strategy.PRE_PROCESSING)
     public String process(String message) {
-        return message + ",Great";
+        return message + ", Converted";
     }
 
 }
