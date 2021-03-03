@@ -1,15 +1,28 @@
 package biz.cits.kafka;
 
 
+import io.smallrye.mutiny.Multi;
+import org.eclipse.microprofile.reactive.messaging.Outgoing;
+
+import javax.enterprise.context.ApplicationScoped;
+import java.time.Duration;
 import java.util.*;
 import java.util.stream.IntStream;
 
+@ApplicationScoped
 public class MessageGenerator {
 
     //    private static String[] clients = new String[]{"ABCDE", "ABCDF", "ABCDG", "ABCDH", "ABCDI", "ABCEF", "ABCEG", "ABCEH", "ABCEI", "ABCFG", "ABCFH", "ABCFI", "ABCGH", "ABCGI", "ABCHI", "ABDEF", "ABDEG", "ABDEH", "ABDEI", "ABDFG", "ABDFH", "ABDFI", "ABDGH", "ABDGI", "ABDHI", "ABEFG", "ABEFH", "ABEFI", "ABEGH", "ABEGI", "ABEHI", "ABFGH", "ABFGI", "ABFHI", "ABGHI", "ACDEF", "ACDEG", "ACDEH", "ACDEI", "ACDFG", "ACDFH", "ACDFI", "ACDGH", "ACDGI", "ACDHI", "ACEFG", "ACEFH", "ACEFI", "ACEGH", "ACEGI", "ACEHI", "ACFGH", "ACFGI", "ACFHI", "ACGHI", "ADEFG", "ADEFH", "ADEFI", "ADEGH", "ADEGI", "ADEHI", "ADFGH", "ADFGI", "ADFHI", "ADGHI", "AEFGH", "AEFGI", "AEFHI", "AEGHI", "AFGHI", "BCDEF", "BCDEG", "BCDEH", "BCDEI", "BCDFG", "BCDFH", "BCDFI", "BCDGH", "BCDGI", "BCDHI", "BCEFG", "BCEFH", "BCEFI", "BCEGH", "BCEGI", "BCEHI", "BCFGH", "BCFGI", "BCFHI", "BCGHI", "BDEFG", "BDEFH", "BDEFI", "BDEGH", "BDEGI", "BDEHI", "BDFGH", "BDFGI", "BDFHI", "BDGHI", "BEFGH", "BEFGI", "BEFHI", "BEGHI", "BFGHI", "CDEFG", "CDEFH", "CDEFI", "CDEGH", "CDEGI", "CDEHI", "CDFGH", "CDFGI", "CDFHI", "CDGHI", "CEFGH", "CEFGI", "CEFHI", "CEGHI", "CFGHI", "DEFGH", "DEFGI", "DEFHI", "DEGHI", "DFGHI", "EFGHI"};
     private static String[] clients = new String[]{"ABCDE", "ABCDF", "ABCDG"};
 
     private static Map<String, Integer> clientMessageIds = Collections.synchronizedMap(new HashMap<>());
+
+    @Outgoing("out-messages")
+    public Multi<String> generate() {
+        return Multi.createFrom().ticks().every(Duration.ofSeconds(5))
+                .onOverflow().drop()
+                .map(tick -> getClientMessage(getClient()));
+    }
 
     private static String getClient() {
         int rnd = new Random().nextInt(clients.length);
